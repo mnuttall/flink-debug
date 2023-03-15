@@ -1,0 +1,23 @@
+services:
+  flink:
+    image: flink:1.16.1
+    command: jobmanager
+    ports:
+      - 8081:8081
+      - 6123:6123
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink"
+    volumes:
+      - .:/test
+  taskmanager:
+    image: flink:1.16.1
+    command: taskmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink
+        taskmanager.numberOfTaskSlots: 20
+    depends_on:
+      - flink
+    scale: 1
+    volumes:
+      - .:/test
